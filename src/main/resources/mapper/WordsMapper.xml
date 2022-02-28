@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.zb.dao.WordsMapper" >
+    <update id="setDayWords" >
+        UPDATE sys_word SET know =1 WHERE id in
+        <foreach collection="list" item="item" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+
+
+    </update>
+
+    <select id="getWords" resultType="com.zb.bean.Words">
+   SELECT
+	w.id,
+	w.english,
+	w.chinese,
+	CASE
+	WHEN w.know=0 THEN
+		'不熟悉'
+	ELSE
+		'熟悉'
+    END AS know,
+	w.sent
+    FROM
+	sys_word w
+  </select>
+  <select id="getDayWords" resultType="com.zb.bean.Words">
+        SELECT
+        w.id,
+        w.english,
+        w.chinese,
+        w.sent
+        FROM
+        sys_word w
+        where know=0
+        limit #{num}
+  </select>
+    <select id="getWordsSort" resultType="com.zb.bean.Words">
+        SELECT
+        w.id,
+        w.english,
+        w.chinese,
+        CASE
+        WHEN w.know=0 THEN
+            '不熟悉'
+        ELSE
+            '熟悉'
+        END AS know,
+        w.sent
+        FROM
+        sys_word w
+        <if test="_parameter==0">
+            order by w.english
+        </if>
+        <if test="_parameter==1">
+            order by  w.know desc
+        </if>
+
+
+    </select>
+
+</mapper>
